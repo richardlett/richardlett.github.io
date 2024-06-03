@@ -1,26 +1,115 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-LNJFM70WFM"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-LNJFM70WFM');
-</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Richard Lettich's personal homepage, showcasing his work, research interests, and publications.">
+    <title>Richard Lettich</title>
     <style>
-        body, html {
-            height: 100%;
+        body {
+            font-family: Arial, sans-serif;
             margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
+            height: 100vh;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .container {
+            display: flex;
+            width: 90%;
+            max-width: 900px;
+            margin-top: 40px;
+            padding: 10px;
+        }
+        .name {
+            font-family: "Courier New", Courier, monospace;
+            font-size: 2em;
+            margin-right: 20px;
+            flex-shrink: 0;
+            text-align: left;
+            line-height: 1;
+        }
+        .content {
+            max-width: 600px;
+        }
+        a {
+            color: #007acc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        a:hover {
+            color: #005f99;
+            text-decoration: underline;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        h1, h2 {
+            margin: 0 0 10px;
+        }
+        p {
+            margin: 0 0 20px;
+            line-height: 1.6;
+        }
+        .publications p {
+            margin: 0 0 5px;
+            line-height: 1.4;
+        }
+        @media (max-width: 600px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .name {
+                text-align: center;
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+            .content {
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
-    <a href="working_draft.pdf">GenomeFace Working Draft</a>
+    <div class="container">
+        <div class="name">
+            Richard<br>Lettich
+        </div>
+        <div class="content">
+
+            <div class="section">
+                <h2>About Me</h2>
+                <p>I'm currently a software engineer / post-bacc at Lawrence Berkeley National Laboratory.</p>
+                <p>I did undergrad at UC Berkeley, where I received a Bachelors in Computer Science.</p>
+                <p>You can contact me at <a href="mailto:rlettich@lbl.gov">rlettich@lbl.gov</a>.</p>
+            </div>
+
+            <div class="section publications">
+                <h2>Interests</h2>
+                <p>My research interests include machine learning, computational geometry, computational biology, numerical analysis, and high performance computing.</p>
+            </div>
+
+            <div class="section">
+                <h2>Research</h2>
+                <p><strong>GenomeFace: a deep learning-based metagenome binner trained on 43,000 microbial genomes</strong> <em>(Out for Peer Review at Nature Biotechnology)</em></p>
+                <p>Richard Lettich, Robert Egan, Robert Riley, Zhong Wang, Andrew Tritt, Leonid Oliker, Katherine Yelick, Aydın Buluç</p>
+                <p><em>bioRxiv</em>, 2024. DOI: <a href="https://doi.org/10.1101/2024.02.07.579326" target="_blank" rel="noopener noreferrer">10.1101/2024.02.07.579326</a></p>
+                <p><a href="https://www.biorxiv.org/content/early/2024/02/08/2024.02.07.579326.full.pdf" target="_blank" rel="noopener noreferrer">Full PDF</a></p>
+                <p><strong>A Surprisingly Simple Method for Distributed Euclidean-Minimum Spanning Tree / Single Linkage Dendrogram Construction from High Dimensional Embeddings via Distance Decomposition</strong></p>
+                <p>Richard Lettich</p>
+                <p><em>Preprint</em></p>
+                <p><a href="path/to/your/preprint.pdf" target="_blank" rel="noopener noreferrer">Full PDF</a></p>
+                <p><strong>GALATIC: GPU Accelerated Sparse Matrix Multiplication over Arbitrary Semirings (GALATIC) v1.0</strong></p>
+                <p>Richard Lettich</p>
+                <p><em>Computer Software</em>, 2021. DOI: <a href="https://doi.org/10.11578/dc.20210902.3" target="_blank" rel="noopener noreferrer">10.11578/dc.20210902.3</a></p>
+                <p><a href="https://doi.org/10.11578/dc.20210902.3" target="_blank" rel="noopener noreferrer">Access GALATIC Software</a></p>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
+
