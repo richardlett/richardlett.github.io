@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Guide for installing GenomeFace on Perlmutter with Mamba">
+    <title>GenomeFace Installation Guide</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin-top: 40px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.01);
+        }
+        h1, h2 {
+            margin: 0 0 20px;
+            color: #007acc;
+        }
+        p, ul, ol {
+            margin: 0 0 20px;
+            line-height: 1.6;
+        }
+        a {
+            color: #007acc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        a:hover {
+            color: #005f99;
+            text-decoration: underline;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 0.9em;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Installing GenomeFace on Perlmutter with Mamba</h1>
+
+        <div class="section">
+            <h2>Preliminaries</h2>
+            <p>Your home folder on Perlmutter has a size limit of 40GB, but the <code>$SCRATCH</code> space allows you up to 20TB. GenomeFace requires about 4GB for package caching and an additional 10GB for the environment, so we'll be using the <code>$SCRATCH</code> directory for our installations.</p>
+        </div>
+
+        <div class="section">
+            <h2>Step 1: Installing Mamba</h2>
+            <p>Mamba is a fast, robust package manager that is a near drop-in replacement for Conda. It is preferred over Conda due to its significantly faster performance, particularly when installing large packages and resolving dependencies. Its use is <strong>highly recommended</strong>.</p>
+            <p>If you don't have Mamba or Conda already installed, please execute the following commands to download and install Mamba:</p>
+            <pre><code>
+# Download Miniforge installer (includes Mamba)
+curl -L -o Mambaforge-Linux-x86_64.sh https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh
+# Install Miniforge to your $SCRATCH directory
+bash Mambaforge-Linux-x86_64.sh -b -p $SCRATCH/mambaforge
+
+# Add Mamba to your PATH for the current session
+export PATH=$SCRATCH/mambaforge/bin:$PATH
+
+# Activate the base environment
+mamba init
+
+# Restart your shell or run the following
+exec $SHELL
+            </code></pre>
+        </div>
+
+        <div class="section">
+            <h2>Step 2: Changing Mamba/Conda Package Cache Location</h2>
+            <p>To change the package cache location, you'll need to modify your <code>.condarc</code> file or create one if it doesn't exist. This step ensures that packages are stored in <code>$SCRATCH/pkgcache</code>:</p>
+            <pre><code>
+# make pkgcache directory
+mkdir -p $SCRATCH/pkgcache
+# Create or edit .condarc to update the package cache directory
+echo "pkgs_dirs:
+  - $SCRATCH/pkgcache" > ~/.condarc
+            </code></pre>
+        </div>
+
+        <div class="section">
+            <h2>Step 3: Create New Environment</h2>
+            <p>Now, create a new environment specifically for GenomeFace with the prefix <code>$SCRATCH/genomeface</code>.</p>
+            <pre><code>
+# Create the new environment
+mamba create --prefix $SCRATCH/genomeface
+
+# Activate the environment
+mamba activate $SCRATCH/genomeface
+            </code></pre>
+        </div>
+
+        <div class="section">
+            <h2>Step 4: Install GenomeFace</h2>
+            <p>With the environment activated, you can now install GenomeFace:</p>
+            <pre><code>
+# Install GenomeFace
+mamba install genomeface cuda-version=11.7 -c nvidia -c rapidsai -c conda-forge -c bioconda -c https://portal.nersc.gov/project/m1982/genomeface_repo
+            </code></pre>
+            <p><strong>Or, for the experimental version w/ eukaroyte support:</strong></p>
+            <pre><code>
+mamba install genomeface cuda-version=11.7 -c nvidia -c rapidsai -c conda-forge -c bioconda -c https://portal.nersc.gov/project/m1982/genomeface_repo_euk
+            </code></pre>
+        </div>
+
+        <div class="section">
+            <h2>Using GenomeFace: Command-Line Options and Examples</h2>
+            <p>Remember to reactivate your conda environment with <code>mamba activate $SCRATCH/genomeface</code> anytime you want to use it.</p>
+            <h3>Help Message</h3>
+            <p>If you need a quick reference or run into issues, you can always display the help message using the <code>-h</code> flag. This will also show the detected GPUs.</p>
+<pre><code>
+genomeface -h
+</code></pre>
+<b>Help Output:</b>
+<pre><code>
+usage: genomeface [-h] -i INPUT_FILE -a ABUNDANCE_FILE -g MARKERS_FILE -o OUTPUT_FOLDER
+                     [-m MIN_CONTIG_LENGTH] [-p MIN_PURITY] [-s]
+
+GenomeFace Prerelease
+  - A next-generation tool for metagenomic binning, using deep learning and multi-GPU accelerated
+clustering. Ideal for large-scale, real-world data.
+
+The Exabiome Project (Lawrence Berkeley National Laboratory)
+  - Contact rlettich@lbl.gov for issues or unexpected poor performance.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -i INPUT_FILE         Input FASTA file containing metagenome assembly (optionally gzipped).
+  -a ABUNDANCE_FILE     MetaBAT 2 style TSV file containing abundance data. Typically produced by
+                        the `jgi_summarize_depths` or `coverm` programs.
+  -g MARKERS_FILE       Input TSV file describing marker genes found on each contig. Can be
+                        produced by the included `markersgf` program.
+  -o OUTPUT_FOLDER      Output folder for writing bin FASTA files
+  -m MIN_CONTIG_LENGTH  Minimum contig length to be considered for binning (default: 1500).
+  -p MIN_PURITY         Minimum marker gene estimated % purity for selecting clusters for output.
+                        Balances Precsion / Recall (default: 85)
+  -s                    Specifies that the input FASTA is multiple single sample assemblies,
+                        concatenated.
+
+CUDA Devices (Clustering Acceleration):
+  - Device 0: NVIDIA A100-PCIE-40GB
+
+Tensorflow Enabled Devices (Neural Network Acceleration):
+  - /physical_device:GPU:0
+
+Notes:
+  - By default, coassembly is assumed. For concatenated single-sample assemblies, use the [-s] flag.
+
+Examples:
+  genomeface -i coassembly.fa.gz -a abundance.tsv -g markers.tsv -o ./output
+  genomeface -i concatenated_assemblies.fa.gz -a abundance.tsv -g markers.tsv -o ./output -s -m 1000
+</code></pre>
+        </div>
+
+        <div class="section">
+            <h2>Output</h2>
+            <p>If all goes well, you should be able to run it, and see something like this:</p>
+            <img src="https://user-images.githubusercontent.com/59459734/268072908-b0f3e031-1092-440b-8008-3ea1d23eb546.png" alt="GenomeFace Output Example">
+        </div>
+    </div>
+</body>
+</html>
